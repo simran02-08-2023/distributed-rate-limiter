@@ -23,23 +23,33 @@ Implements both Token Bucket and Sliding Window algorithms with atomic Lua scrip
 - Stored in Redis ZSET (sorted set by timestamp)
 
 ## Architecture
-Client Request
+                    Client
 
-↓
+                       │
 
-RateLimitFilter (Spring Filter)
+             HTTP Request
 
-↓
+                       │
 
-RateLimiterService (Token Bucket / Sliding Window)
+            Spring Boot API
 
-↓
+                       │
 
-Redis (Atomic Lua Script)
+             RateLimitFilter
 
-↓
+                       │
 
-Allow (200) or Block (429)
+        ┌──────────────┴──────────────┐
+        │                             │
+ Token Bucket                  Sliding Window
+        │                             │
+        └──────────────┬──────────────┘
+                       │
+              Atomic Lua Script
+                       │
+                    Redis
+                       │
+            Allow (200) / Block (429)
 ## API Endpoints
 
 | Method | Endpoint      | Description                        |
